@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Contacts-Cement</title>
+    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', defer: false, 'data-turbolinks-track': 'reload' %>
+    <%= csrf_meta_tag %>
+  
+</head>
+<body>
+<%=render :template => "layouts/new_nav" %>
+
+<div class="container-fluid">
+
+  <div class="row" style="padding:1px">
+   <br><br>
+    <div class="col-12"style="text-align:left" id="contacts">
+      <%=yield%>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<html>
+<head>
+   <%=render :template => "layouts/header" %>
+   <script type="text/javascript">
+     
+     var search_contacts = [];
+     var contact_names = []
+    $(document).on('keyup','input.each_amount', {} ,function(e){ 
+       
+      calculate_payment_amount();
+     
+        
+    });
+
+    $(document).on('keyup','input.keyup_amount', {} ,function(e){ 
+       
+      calculate_payment_amount();
+     
+        
+    });
+
+
+    function calculate_payment_amount(){
+
+    	var total = 0.0;
+      
+
+      $(".each_amount").each(function(){
+           
+          if($(this)[0].value  != ''){
+            var a = parseFloat($(this)[0].value);
+            total = total+a;
+          }
+       });
+
+       if($("#discount_amount")[0].value != '') {
+        total = total + parseFloat($("#discount_amount")[0].value);
+         $("#total_amnt").html(indianFormat(parseFloat(total).toFixed(2)) );
+      }
+
+
+    }
+
+    function indianFormat(amount) {
+    var delimiter = ","; // replace comma if desired
+    amount = new String(amount);
+    var a = amount.split('.',2);
+    var dec = ''
+    var k = a[0]
+    var istr =  k.split('').reverse().join('');
+
+    if(a[1].length > 0){
+        dec = '.'+a[1]
+    }
+    var ln = a[0].length -1
+    i =0;
+
+     var rn_str = '';
+     while ( i <= ln ){
+          if ( i == 3  || ( i > 4 && i%2 == 1)){
+             rn_str += ','
+          }
+
+          rn_str += istr[i];
+          i++;
+
+     }
+     rs = rn_str.split('').reverse().join('');
+     return rs+dec
+     
+  }
+
+    function removeItem(row_no){
+     $("#pay_"+row_no).remove();
+     calculate_payment_amount();
+
+   }  
+   </script> 	
+</head>
+<body>
+<%=render :template => "layouts/new_nav" %>
+
+<div class="container-fluid">
+
+  <div class="row-fluid" style="padding:5px">
+
+    <div class="col-12"style="text-align:left" id="contacts">
+            <%=yield%>
+    </div>
+
+
+  </div>
+
+</div>
+</body>
+</html>

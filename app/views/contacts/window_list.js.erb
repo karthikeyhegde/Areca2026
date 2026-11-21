@@ -1,0 +1,4 @@
+$("#contact-modal-window").addClass('list-modal');
+$("#myModaTitle").html("Contacts")
+$("#model_contact").html("<%= escape_javascript(render 'contacts/quick_select_list', locals: {contacts: @contacts, type: 'txn'} ) %>");
+console.log(" TEST TEST");

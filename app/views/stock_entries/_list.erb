@@ -1,0 +1,50 @@
+<table class="table stockentrytable" style='font-size:12px;width:90%' align="center">
+  <thead>
+    <tr style="background-color:#133863;color:#fff">
+    <th>Entry#</th>
+    <th>Date</th>
+    <th>Item</th>    
+    <th>Contact</th>
+    <th>Notes</th>
+    <th>Numbers & Price</th>
+    <th >Action</th>
+    </tr>
+    
+  </thead>
+  <tbody>
+   <% i = 0
+      total = 0
+    @stock_entries.each{|c|
+     i+= 1
+     total += c.numbers
+      %>
+       <tr>
+      <td> <span id ='t1'>
+          <%=link_to "#{c.id}", edit_stock_entry_url(c.id), :class=>"btn btn-xs btn-link "%>
+         </span></td>
+      <td><%=c.on_date%></td>
+      <td><%=link_to c.item.name, rep_txnitems_item_url(c.item.id)%></td>
+      <td><%if !c.blank? and !c.contact_id.blank?%><%=link_to c.name_subname, report_page_contact_path(:id => c.contact_id)%><%end%></td>
+      <td>
+        <%if !c.note.blank?%>
+           <%=c.note%>
+        <%end%>
+        <%if !c.vehicle_number.blank?%>
+           Veh No: <%=c.vehicle_number%>
+        <%end%>
+
+      </td>
+      <td><%=c.numbers%>  <%if !c.nil?  and (! c.price.nil? and c.price > 0) %> ( <%=c.price%> )<%end%> </td>
+      
+    <td>
+         <span id='t2' title="Remove Entry <%=c.id%>">
+          <%=link_to "x", remove_stock_entry_url(c.id), method: :post, class: "btn btn-xs btn-danger", data:{confirm: "Stock Entry #{c.id} will be deleted permanently !!  Are you Sure ?", disable_with: "Processing..."}%>
+         </span>
+      </td>
+   </tr>
+   <%}%>
+   <tr class='table-warning'><td></td><td></td><td></td>
+    <td>Total Numbers</td><td></td><td><%=total%></td><td></td></tr>
+  </tbody>
+
+</table>

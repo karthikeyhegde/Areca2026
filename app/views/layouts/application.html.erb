@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Areca</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', defer: false, 'data-turbolinks-track': 'reload' %>
+
+    
+</head>
+<body link="blue">
+
+<div class="container-fluid">
+
+  <div class="row-fluid" style="padding:5px">
+
+    <div class="span12"style="text-align:left" id="contacts">
+          
+            <%=yield%>
+    </div>
+
+
+  </div>
+
+</div>
+</body>
+</html>

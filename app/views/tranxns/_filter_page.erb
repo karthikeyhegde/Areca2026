@@ -1,0 +1,119 @@
+
+<div class="col-10 offset-1 card" style="background-color: #ECF0F1;">
+    <%=form_tag filter_txn_tranxns_url, :remote => true do%>
+      <div class="row">
+        <div class="col-4 offset-2">
+          <%if !@selected_entity.nil? %><span>
+            <%=@selectedentity_name%>
+          </span>
+          <%end%>
+          <br>
+           <%=text_field_tag :from_date1, '', {class: 'report-date1', style:'height:25px;width:120px;', :placeholder => "From Date"}%>
+
+       <span style="font-size:18px;"> - </span>
+      
+        <%=text_field_tag :to_date1, '', {class: 'report-date1', style:'height:25px;width:120px;', :placeholder => "To Date"}%>
+        <br><br>
+        <% classname = @selected_entity.class.name %>
+          <% if  classname != 'Item' %> 
+             Items:
+             <%=select_tag  'item_id', options_for_select(Item.picklist),{ multiple: true, placeholder: "Select Item"}%>
+         <br>
+         <br>
+            <%end%>  
+
+        </div>
+        <div class="col-4 " style="padding:15px;">
+           
+         <% if  classname != 'Contact' %>
+         Contacts: 
+           <%=select_tag  'contact_id', options_for_select(Contact.picklist),{multiple: true , placeholder: "Select Contacts"}%>
+         <br>
+         <br>
+            <%end%>   
+        <% if  classname != 'Site' %> 
+             Sites:
+             <%=select_tag  'site_id', options_for_select(Site.picklist), {multiple: true , placeholder: "Select Sites"} do%><option></option><%end%>
+        <%end%>   
+        </div>  
+      </div>
+       
+       
+         
+         <br>
+      
+     <div class="row">
+       <div class="col-8 offset-2">
+         <%=submit_tag "Filter" , {class:'btn btn-primary btn-xs', style:'vertical-align: top;', :onclick => "return validateform();"}%>
+           <%=submit_tag "Print view" , {class:'btn btn-primary btn-xs', style:'vertical-align: top;', 
+            :onclick => "return validateform();"}%>
+          <span id='myspinner' style="display:none;"><%=image_tag "ajax-loader.gif"%></span>
+      <%end%>
+       </div>
+     </div>
+
+          
+         
+
+     </div>
+
+
+<script type="text/javascript">
+$('#page_number').hide();
+$('.report-date1').datepicker({ dateFormat: 'dd-mm-yy',
+    beforeShow: function (textbox, instance) {   
+                instance.dpDiv.css({
+                    marginTop: (-textbox.offsetHeight+30) + 'px'
+                    
+                });
+            }
+
+ });
+
+$('#item_id').select2({
+    width:'210px',
+    multiple: "multiple",
+    placeholder: "Select Items"
+
+ });
+
+$('#contact_id').select2({
+    width:'210px',
+    multiple: "multiple"
+
+ });
+$('#site_id').select2({
+    width:'210px',
+    multiple: "multiple",
+    placeholder: "Select Sites"
+
+ });
+  function togglefilter(){
+  console.log('a');
+  $('#filter_page').toggle();
+ }
+
+ function validateform(){
+  elem_arr = ['from_date1','to_date1','item_id','contact_id','site_id'];
+  is_all_blank = true;
+  $.each(elem_arr, function( i, vl ){
+   console.log($('#'+vl).val());
+    fl_val = $.trim($('#'+vl).val());
+
+   if( fl_val != ''){
+     is_all_blank = false;
+   }
+
+  });
+
+   if(is_all_blank == true){
+    alert('Please select/enter atleast one field');
+    return false;
+   }else{
+    $('#myspinner').show();
+    return true;
+   }
+  
+ }
+
+</script>

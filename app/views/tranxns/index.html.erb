@@ -1,0 +1,27 @@
+  <div id="index_head" class="row" style="padding:0px;margin:0px">
+     <div class="col-4 offset-1">
+           
+           <span class='h4-class'>Transaction List</span>&nbsp;&nbsp;<span onclick="togglefilter();" class="btn btn-default"><i id='flt_icon' class="fa fa-search-dollar "  style="color:blue;"> </i> 
+           </span>
+           <span id='fltr_applied' style="display:none;" >
+             <span id='filter_applied' class="subinfo" >Filter Applied > &nbsp; </span>
+             <%=link_to "Clear Filter", pagination_tranxns_path, {remote:true, method: 'post',onclick:"$('#myspinner').show()"} %></span>
+           </span>
+           <span id='myspinner' style="display:none;"><%=image_tag "ajax-loader.gif"%>
+     </div>
+
+       <%=render :partial => "paging_links", :locals => {:ctr_method => "pagination_tranxns_path",:form_act => pagination_tranxns_path }%>
+
+    
+ </div>
+
+    <%=render :template => 'helpers/flash'%>
+
+<div id ='filter_page' class='row ' style="display:none;" >
+  <%=render :partial => "filter_page", :locals => {:ctr_method => "pagination_tranxns_path",:form_act => pagination_tranxns_path }%>
+</div>
+<div id="index_list" class="row">
+   <div  id='trans_list' class="col-12" style="min-height:400px;">
+    <%=render :partial => 'list'%>
+   </div>
+</div>

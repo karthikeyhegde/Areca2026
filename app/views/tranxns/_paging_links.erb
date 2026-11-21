@@ -1,0 +1,45 @@
+
+<div class="col-3" style="text-align: right;padding-right:1px;" >
+           <span id="page_number1"> 
+            <%=link_to  "2 Week",  pagination_tranxns_path(:sorted_column => @sort_column,:sort_order => @sort_order, :no_of_weeks => 2), :remote => true, :method => :post, :id => '2_weeks', :onclick => "$('#myspinner').show()" %>
+          </span> |
+
+          <span id="page_number2"> 
+            <%=link_to  "3 Week",  pagination_tranxns_path(:sorted_column => @sort_column,:sort_order => @sort_order, :no_of_weeks => 3), :remote => true, :method => :post , :id=>'3_weeks', :onclick => "$('#myspinner').show()" %>
+            
+          </span> |
+          <span id="page_number3"> 
+            <%=link_to  "1 Month",  pagination_tranxns_path(:sorted_column => @sort_column,:sort_order => @sort_order, :month_ago => true), :remote => true, :method => :post, :id => '1_month', :onclick => "$('#myspinner').show()" %>
+          </span>|
+   </div>
+<div class="col-4" style="padding-left:1px;">
+
+<span>
+          <%=form_tag pagination_tranxns_path, :remote => true do%>
+        <%=text_field_tag :from_date, '', {class: 'report-date', style:'height:25px;width:120px;', :placeholder => "From Date"}%>
+
+       <span style="font-size:18px;"> - </span>
+      
+        <%=text_field_tag :to_date, '', {class: 'report-date', style:'height:25px;width:120px;', :placeholder => "To Date"}%>
+          <%=submit_tag "Show" , {class:'btn btn-primary btn-xs', style:'vertical-align: top;', :onclick => "$('#myspinner').show()"}%>
+          <span id='myspinner' style="display:none;"><%=image_tag "ajax-loader.gif"%></span>
+      <%end%>
+          </span>
+
+     </div>
+
+
+<script type="text/javascript">
+$('#page_number').hide();
+$('.report-date').datepicker({ dateFormat: 'dd-mm-yy',
+    beforeShow: function (textbox, instance) {   
+                instance.dpDiv.css({
+                    marginTop: (-textbox.offsetHeight+30) + 'px'
+                    
+                });
+            }
+
+ });
+
+
+</script>

@@ -1,0 +1,30 @@
+	<br>
+<div class="row" id="items_tab">
+	<div clas="col-6 offset-1">
+       <%=link_to "Items List",items_url,  :id=>'list', :class=>'label-success label'%>
+       &nbsp;&nbsp;|
+      <%=link_to "New Item", new_item_url, :id=>'add' , :class=>'label-success label'%>
+      &nbsp;&nbsp;|
+      <%=link_to "Sales Aggrigations", aggrigated_summary_items_url, :id=>'add' , :class=>'label-success label'%>
+      <%if @auser.role  == 'Admin'    %> | <%=link_to "Quick Item Edit", edit_items_all_items_url, :id=>'quickedit' , :class=>'label-success label'%>
+     <%end%>
+     <hr style="margin:5px;">
+    </div>  
+     <div class="col-5">
+     &nbsp;
+   </div>
+    <div clas="col-4 ">
+      <%if  !@item.nil?  and !@item.id.nil?%>
+      <h5> <%=link_to "Transactions",rep_txnitems_item_url(@item.id), :class=>'badge badge-success '%>
+       &nbsp;&nbsp;
+      <%=link_to "Stock Entries", stock_entries_list_items_path(id: @item.id), {method: :post, :class=>'badge badge-success' }%>
+      &nbsp;&nbsp;
+      <%=link_to "Daily Report", daily_trans_items_path(item_id: @item.id), {method: :get, :class=>'badge badge-success' }%>
+      &nbsp;&nbsp;
+    </h5>
+      
+     <hr style="margin:5px;">
+     <%end%>
+    </div> 
+
+</div>

@@ -1,0 +1,7 @@
+
+$('#first_row_fields').before("<%= j(render  :template => 'tranxns/_trans_error', :locals => {:trans => @trans} ) %>");
+
+<%if @save_success and params[:commit] == 'Save and +New' %>
+	window.location.href = "<%= quick_add_form_tranxns_path %>"
+<%end%>
+$('#txn-btn').removeAttr("disabled");

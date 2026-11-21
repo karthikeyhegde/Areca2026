@@ -1,0 +1,22 @@
+<html>
+<head>
+     <title>Areca</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', defer: false, 'data-turbolinks-track': 'reload' %>
+    
+</head>
+<body>
+<%=render :template => "layouts/new_nav" %>
+<div class="container-fluid">
+  <div class="row" style="padding:1px">
+    <div class="col-12"style="text-align:left">
+          <%=yield%>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

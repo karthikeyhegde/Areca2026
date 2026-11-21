@@ -1,0 +1,115 @@
+<br>
+<% sum = 0 %>
+<% if @contact.nil? %>
+<div class="row">
+  <div class="col-5 offset-1 h4-class " style="padding-left:2.0rem;"></div>
+</div>
+<%end%>
+
+<div class="row">
+  
+  <div class="col-2 offset-1"><h5> <span class="greytext">Payment List</span></h5></div>
+  <div class="col-8">
+    <%=form_tag filter_payments_url do%>
+        <%=text_field_tag :sdate, params[:sdate], {class: 'report-date', style:'height:25px;width:120px;', :placeholder => "From Date"}%>
+       <span style="font-size:18px;"> - </span>
+      
+        <%=text_field_tag :edate, params[:edate], {class: 'report-date', style:'height:25px;width:120px;', :placeholder => "To Date"}%>
+           &nbsp;&nbsp;&nbsp;&nbsp;
+         <%=select_tag  'contact_id', options_for_select(["Select Contact"]+Contact.picklist, params[:contact_id])%>
+           &nbsp;&nbsp;&nbsp;&nbsp;
+          <%=submit_tag "Show" , {class:'btn btn-primary btn-xs', style:'vertical-align: top;', :onclick => "$('#myspinner').show()"}%>
+          <span id='myspinner' style="display:none;"><%=image_tag "ajax-loader.gif"%></span>
+    <%end%>
+    <span class="subinfo"> <%= @subtext_msg%></span>
+  </div>
+
+ </div>
+
+<div id="trs" class="row">
+   <div class="col-12">
+<table class="table zebra-striped table-condensed " style='font-size:12px;width:80%' align="center">
+  <thead style="background-color:#D4638D;">
+    <th>Payment#</th>
+    <th>Date</th>    
+    <th>Details</th>
+    <th>Contact</th>
+    <th>Amount</th>
+    <% if params[:commit] != 'Print View' %>
+     <th>Account Balance</th>
+     <th style="color:#330099">Action</th>
+     <%end%>
+  </thead>
+  <tbody>
+   <% i = 0
+    @payments.each{|c|
+     i+= 1
+
+     sum += c.payment_amount if c.recieved == 1
+     sum -= c.payment_amount if c.recieved != 1
+      %>
+    <%if i%2 == 0%>
+       <tr style="background-color: #FAEBF0">
+    <%else%>
+    <tr>
+       
+    <%end%>
+
+    <td><span id ='t1'>
+          <%=link_to "#{c.id}", edit_payment_url(c.id), :class=>"label label-info"%>
+         </span></td>
+    <td><%=c.on_date%></td>
+    <td><%c.payment_rows.each {|p| %>
+
+       <%=p.pay_type%> : <%if !p.note.blank?%> <%=p.note%>  : <%end%> <%=p.amount%> <br>
+     <% }%>
+     <% if ( c.discount.to_i > 0)  %>Discount : <%=c.discount%><br> <%end%><%=c.payment_note%></td>
+    <td><%=c.tofrom_contact%>
+        <%if !c.site_id.blank? && c.site_id.to_i != 0%>
+           <br>Site: <%=c.site.name%>
+        <%end%>
+    </td>
+    <td><%if c.recieved != 1%> -<%end%><%=Utility.indian_number c.payment_amount %></td>
+    <% if params[:commit] != 'Print View' %>
+    <td><% if !c.contact.nil?%><%=Utility.indian_number (c.contact_balance.to_s.to_f + c.contact.starting_balance.to_s.to_f)%><%end%></td>
+    <td>
+          <span id='t2' title="Remove Payment <%=c.id%>">
+          <%=link_to "x",  remove_payment_url(c.id), method: :post, class: "btn btn-xs btn-danger", data:{confirm: "Payment #{c.id} will be deleted permanently !!  Are you Sure ?", disable_with: "Processing..."}%>
+         </span>
+      </td>
+      <%end%>
+   </tr>
+   <%}%>
+   <tr><td></td></tr>
+   <tr class ='success' ><td></td>
+    <td><b>Total </b></td>
+    <td><b><%=@payments.size%> Payments </b></td>
+    <td></td>
+    <td><b><%= Utility.indian_number sum%></b></td>
+    <td></td>
+    <td></td>
+    </tr>
+  </tbody>
+
+</table>
+</div>
+</div>
+
+<script type="text/javascript">
+
+$('.report-date').datepicker({ dateFormat: 'dd-mm-yy',
+    beforeShow: function (textbox, instance) {   
+                instance.dpDiv.css({
+                    marginTop: (-textbox.offsetHeight+30) + 'px'
+                    
+                });
+            }
+
+ });
+$('#contact_id').select2({
+    width:'230px',
+
+ });
+
+
+</script>

@@ -1,0 +1,202 @@
+
+<%if params[:commit] == 'Print View'%>
+
+    <table class="table table-striped " style='font-size:12px;text-align:left;' align="center">
+        <thead></thead>
+        <tr>
+         <td> <b> <%=@contact.name%></b></td>
+         <td> Ph: <%=@contact.contact_number%></td>
+         <td>
+              <%if !@contact.address.blank? %>
+                Details : <%=@contact.address %>
+              <%end%>
+         </td>       
+        </tr>
+  
+	    <tr>
+	         <td> Total Amount : </td>
+	         <td> <%=Utility.indian_number(@contact.total_purchase)%></td>
+	         <td></td>
+	         <td>Total Payment : </td>
+	         <td><%=Utility.indian_number(@contact.total_payment)%></td>
+	    </tr>
+        <tr>
+            <td> Baaki/Starting Amount : </td>
+            <td><%=Utility.indian_number(@contact.starting_balance)%></td>
+            <td></td>
+            <td>Current Balance :</td>
+            <td><%=Utility.indian_number(@contact.balance)%></td>
+        </tr>
+
+        <%if  params[:from_date] != '2000-01-01' || params[:to_date] != '2100-01-01'%>
+          <tr>
+
+           <td> <span style="color:#b8b8b8"> &nbsp;Details </span>
+	            <span style="color:#b8b8b8">
+		            <%if params[:from_date] != '2000-01-01' and !params[:from_date].blank?%> 
+		               From <%=params[:from_date]%> 
+		            <%end%>
+		            <%if params[:to_date] != '2100-01-01' and !params[:to_date].blank? %> 
+		                Up to <%=params[:to_date]%> 
+		            <%end%>
+	            </span>
+            </td>
+        </tr>   
+        <%end%> 
+    </table>
+<%else%>   
+<%end%>
+<%if @transactions.size < 1%>
+   NO Transactions Found !
+<%else%>
+<%if @filter == true %>
+  <div class="subinfo" style="padding-left:10em;"> Filter Applied : <%=@report.name%>
+  <br></div>
+<%end%>
+<table class="table table-striped " style='font-size:12px;width:80%;text-align:left' align="center" rules="rows">
+  <thead style="background-color:#2874A6;color:#FFF;">
+  <% if params[:commit] != 'Print View' %>
+    <th style="width:5%;">Trans#</th>
+   <%end%> 
+    <th>Date</th>
+    <th>Note</th>
+    <th >Item</th>
+    <th>Total</th>
+    <th>Payment</th>
+
+    <th style="color:#330099;width:10%;">Balance</th>
+    <th style="color:#330099;width:5%;">Delete</th>
+  </thead>
+  <tbody>
+   <% i = 0
+   @transactions.each{|c|
+     i+= 1 %>
+    <%if i%2 == 0%>
+       <tr>
+    <%else%>
+       <tr class="info">
+    <%end%>
+    <% if params[:commit] != 'Print View' %>
+    <td style="width:10%">
+    <%if c.trans_type == "payment" %>
+      <%=link_to c.id, edit_payment_url(c.id)%>
+    <%else%>  
+    <%=link_to c.id, edit_tranxn_url(c.id)%>
+    <%end%>
+    </td>
+    <% end %>
+    <td><%=c.on_date%></td>
+    <td>
+      <div style="max-width:150px;">
+      <%if !c.site.blank? %> 
+          
+         Site : <%=link_to c.site.name, Rails.application.routes.url_helpers.send("rep_txnitems_site_path", :id => c.site.id)%><br><%end%>
+     <% if c.trans_type == 'payment'  %>
+        <%if c.recieved == 0 %>
+          PAYMENT PAID
+          <%else%>
+           PAYMENT RECIEVED
+         <%end%>
+         <br>
+        <%end%> 
+        <% if c.buyback == 1%>
+          <br>
+           Items Returned
+         <%end%>
+       <%if !c.descri.blank? %>
+         <%=c.descri%>
+         <br>
+       <%end%>
+        
+         <%if !c.vehicle_number.blank? %>
+            <br>
+            Vehicle:<%=c.vehicle_number%>
+         <%end%>
+
+         <%if !c.bill_number.blank? %>
+            <br>
+            Bill No: <%=c.bill_number%>
+         <%end%>
+
+       </div>
+    </td>
+
+    <td>
+
+      <% if c.trans_type == 'payment'  %>
+       
+         <%c.payment_rows.each {|p| %>
+            <%=p.pay_type%> : <%if !p.note.blank?%> <%=p.note%>  : <%end%> <%=p.amount%> <br>
+         <% }%>
+
+      <% else %>
+        <%c.txn_items.each{|tx|%>
+        <% if !tx.tax_percentage.nil? %>
+            <%=tx.item_name%> &nbsp;&nbsp; <%=tx.number_price_tax_total%>
+          <%else%>
+            <% if tx.item != nil%>   
+              <%=tx.item.name%> &nbsp;&nbsp; 
+            <%end%> <%=tx.number%> &nbsp;x&nbsp;<%=tx.price%> 
+        <%end%>  
+        
+         <br>
+        <%}%>
+        <%if c.hamaali.to_f > 0%>
+          Hamaali &nbsp&nbsp <%=Utility.indian_number(c.hamaali)%>
+          <br>
+        <%end%>
+        <%if c.vehicle_charges.to_f > 0%>
+          Vehicle charges &nbsp&nbsp <%=Utility.indian_number(c.vehicle_charges)%>
+          <br>
+        <%end%>
+      <%end%>
+      <%if c.other_charges_amount.to_f > 0%>
+        Other Charges &nbsp&nbsp <%=Utility.indian_number(c.other_charges_amount)%>
+      <%end%>
+       <br>
+      <%if c.discount.to_f > 0%>
+        Discount &nbsp&nbsp <%=Utility.indian_number(c.discount)%>
+      <%end%>
+      
+      </td>
+    <td> <% if c.trans_type != 'payment' %>
+         <% if c.buyback == 1%>
+               -
+             <%end%>  
+          <%=Utility.indian_number c.amount%>
+        <%end%>
+    </td>
+    <td> <%= Utility.indian_number c.payment_amount%> </td>
+
+    <%
+		    puts "Printing ---- #{c.id}"
+		    puts (c.contact_balance + c.contact.starting_balance)
+    %>
+    <td> <%=Utility.indian_number((c.contact_balance + c.contact.starting_balance))%> </td>
+    <td>
+      <span id='t2' title="Remove Txn <%=c.id%>" style="font-size: 3px;">
+          <%=link_to "x", remove_tranxn_url(:id => c.id, :show_page => 'report_page'), method: :post, class: "btn btn-xs btn-danger", data:{confirm: "Transaction #{c.id} will be deleted permanently !!  Are you Sure ?", disable_with: "Processing..."}%>
+         </span>
+    </td>
+   </tr>
+   <%}%>
+
+   <tr>
+  
+         <td>  <b>Total  </b> </td>
+      <td><%if params[:from_date] != '2000-01-01' and !params[:from_date].blank?%> From <%=params[:from_date]%> <%end%></td>
+      <td><%if params[:to_date] != '2100-01-01' and !params[:to_date].blank? %>  Up to <%=params[:to_date]%> <%end%></td>
+     <td></td>
+      <td><b><%=Utility.indian_number(Tranxn.total_amount @transactions)%></b></td>
+      <td><b><%=Utility.indian_number(Tranxn.total_payment @transactions)%></b></td>
+      <td><%if !@filter %><b><%=Utility.indian_number( (Tranxn.total_balance @transactions) + 
+        @transactions[0].contact.starting_balance ) %></b><%end%></td>
+        <td></td>
+
+   <tr>
+  </tbody>
+
+</table>
+<%end%>
+<br>
+<hr>

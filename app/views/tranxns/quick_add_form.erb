@@ -1,0 +1,254 @@
+<div id='contact-modal-window' class="modal fade" role="dialog" aria-labelledby="myModalLabel" scrollable ="true" tabindex="-1" style=" position:absolute;
+    top: 10%;
+    left: 5%;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="myModaTitle"></h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id='model_contact'>
+        Loading ...
+      </div>
+</div>
+</div>
+</div>
+
+<% if !flash[:notice].blank? %>
+
+<div class="alert alert-success">
+       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+       </button>
+        <%=flash[:notice]%>
+     </div>
+<%end%>
+<%= form_for @trans,  :method => @form_method, :remote => true, :html =>{:id=>'transaction_form'} do |f| %>
+
+  
+    <div id='Header' class="row-fluid txn-form">
+     <div class="col-4 offset-1" >
+
+     <h5>New Transaction</h5>
+     </div>
+   </div>  
+
+   <% @row_no ||= 1 %>
+  <div id='div_item_table' class="row-fluid txn-form" style="border:0;">
+
+   <div class="col-10 offset-1">
+      <table id='item_tb' class=' nb-table' style="border:1px solid #e6e6e6; background-color: #f1f1f1;width:90%">
+        <thead style="font-size:12px;">
+        </thead> 
+        <tbody style='font-size:13px;'>
+
+          <tr id='first_row_fields'>
+            <td style="width:20%;padding:20px;padding-bottom:10px;font-size:16px;padding-left:30px;"> 
+              Date : <br><%= f.text_field :on_date, class:'input', style:'height:30px;width:70%'%>
+            </td>
+            <td  style="width:20%;padding-bottom:1px;font-size:16px;padding-top:10px;">
+              Customer: <%= link_to ((image_tag "add.png", :size=>"15x15")+' New'), add_txn_contacts_path,  {:remote => true, 'data-toggle' =>  "modal", 'data-target' => '#contact-modal-window', style: 'font-size:14px;'}  %> &nbsp;|
+              <%=link_to ((image_tag "find.png", :size=>"15x15")+" List"), window_list_contacts_path,  {:remote => true, 'data-toggle' =>  "modal", 'data-target' => '#contact-modal-window', style: 'font-size:14px;'}  %> 
+              <br>
+              <%=text_field :txn, :contact, class:'autocomplete', style:"height:30px;width:80%;"%>
+              <br>
+              <%=f.hidden_field :contact_id %>
+            </td>
+            <td style="padding-left:50px;padding-top:10px;font-size:14px;">Site:  <%=link_to ((image_tag "find.png", :size=>"15x15")+" List"), window_list_sites_path,  {:remote => true, 'data-toggle' =>  "modal", 'data-target' => '#contact-modal-window', style: 'font-size:16px;'} %> <br> 
+              <%=text_field  :txn, :site, class:'autocomplete', style:"height:30px;width:80%;"%> <br>
+              <%=f.hidden_field :site_id %>
+            </td>
+          </tr>
+
+          <tr>
+            <td></td>
+            <td> <div id='contact_number' style='color:grey;font-size:11px;font-weight:bold;'></div>
+            </td>
+            <td></td>
+          </tr>
+     
+          <tr id='gap_row_1' class='borderless'>
+            <td style="padding:px;"></td>
+          </tr> 
+
+          <tr id='gap_row_2' class='borderless'>
+            <td ></td>
+           </tr> 
+
+          <tr>
+            <td id='item_th' style="border-top:0px;width:25%;font-size:16px;padding:8px;">
+            &nbsp;<%=link_to ((image_tag "add.png", :size=>"14x14")+' Item'), add_item_row_tranxns_path(:id => '0',:no => @row_no ), :remote => true%></td>
+            <td style="border-top:0px;width:20%;"></td>
+            <td style="border-top:0px;width:20%;"></td>
+          </tr>
+
+          <%=render partial:'item_row_2.erb', locals: {row_no: 1}%>
+          <tr  id='others_row'>
+            <td id='other_link' style="padding-left:10px; padding-top:16px;">
+              &nbsp;<br>
+              <span class="txt-lnk" style="font-size:16px;" onclick="show_other_fields()"> <%=image_tag("add.png", :size=>"14x14")%> Vehicle/Hamali/Discount</span>
+            </td>
+            <td id='vehicle' style="display:none;padding:16px;font-size:14px;">
+               Vehicle Charges: <br> 
+             <%=f.text_field :vehicle_charges, style:'height:30px;width:70%', :class=>'calc-amount'%>
+            </td>
+            <td id='hamaali' style ="display:none;font-size:14px;" colspan='2'>
+              Hamaali: <%=space(9)%> Discount:  <%=space(6)%> Other Charges:
+              <br> 
+              <%=f.text_field :hamaali, style:'height:30px;width:70px;', :class=>'calc-amount'%>
+              <%=space(5)%>
+              <%=f.text_field :discount, style:'height:30px;width:70px;', :class=>'calc-amount'%>
+               <%=space(5)%>
+              <%=f.text_field :other_charges_amount, style:'height:30px;width:70px;', :class=>'calc-amount' %>
+
+            </td>
+          </tr>
+          <tr id='gap_row' class='borderless'>
+            <td></td>
+            <td style="font-size:13px;text-align:right;padding-right:75px;"><br><b>Total Amount</b></td>
+            <td style="padding-left:50px;"> <div id='items_total_value' style='padding-top:20px;'>0</div></td>
+          </tr>
+
+          <tr id='gap_row_3' >
+            <td style="padding:10px;border-bottom: 1px solid #E6E6E6;" colspan="3"></td>
+          </tr> 
+
+          <tr id='gap_row' class='borderless' style="padding:10px;">
+            <td style="padding:20px;font-size:16px;">
+              Payment Type
+              </br>
+              <%=f.select  :payment_type, [['Cash','Cash'],['Cheque','Cheque'],['Bank Transaction']],{},{style:'width:180px;hieght:180px;font-size:16px;padding-top:5px;'}%>
+            </td>
+            <td style="font-size:16px;">
+              Paid Amount 
+              <br>
+              <%=f.text_field  :payment_amount, style:'height:30px;'%></b>
+            </td>
+            <td style="padding-left:80px;font-size:16px;">
+              <span class="label">Return: <%=check_box  :tranxn, :buyback %>
+            </td>
+          </tr>
+
+          <tr>
+            <td id='add_note' style="padding-left:10px;font-size:16px;">
+               <span class="txt-lnk" onclick="$('.t_note').show();$('#add_note').hide();">
+               <%=image_tag "add.png", :size=>"14x14"%> Note and Other info
+              </span>
+            </td>
+            <td class='t_note' style="padding-left:20px;display:none;"> 
+               Note:<br><%=text_area  :tranxn, :descri , cols:25, rows: 4 %>
+            </td>
+
+             <td class='t_note' style="display:none;" ><%=text_field  :tranxn, :vehicle_number, placeholder: "Vehicle Number", style:'height:30px' %>
+             <%=text_field  :tranxn, :bill_number, placeholder: "Bill Number", style:'height:30px' %></td>
+          </tr>
+        
+          <tr id='gap_row_3' >
+            <td style="padding:10px;border-bottom: 1px solid #E6E6E6;" colspan="3"></td>
+          </tr> 
+
+          <tr>
+            <td style="padding:20px;" colspan="3"><%=submit_tag 'Save Transaction',  class:'btn btn-warning', :data => {disable_with: "Saving ..."}, id:'tx-btn'%><%=space(5).html_safe%>
+               <%=submit_tag 'Save and +New',  class:'btn btn-success', :data => {disable_with: "Saving ..."}, id:'tx-btn'%><%=space(5).html_safe%>
+               <%=link_to "Cancel", tranxns_url, :style=>"font-weight:bold"%>
+            </td>
+          </tr>
+        </tbody>  
+      </table>
+    </div>
+  </div> 
+
+<% end %>
+
+<script type="text/javascript">
+
+$('#tranxn_on_date').datepicker({ dateFormat: 'dd-mm-yy' });
+$("#tranxn_on_date").datepicker('setDate', new Date());
+$('.calc-amount').on('keyup', function(){
+    console.log(this.id)
+     calc_total_value();
+
+   });
+
+
+ 
+
+  var last_c_str = '';
+  var contact_names = [];
+  var search_contacts = {};
+  var search_sites = {}
+  var site_names = []
+  var item_stocks  ={}
+    
+  <% @items.each{|it| %>
+        itm_id = "<%=it.id%>"
+        itm_stock = "<%=it.current_stock%>"
+        item_stocks[itm_id] = itm_stock
+  <%}%>
+
+   
+   <% @cont.each{|c| %>
+
+                    n_name = "<%=(c.subname == nil ? c.name : c.name+' '+c.subname)%>"
+                    contact_names.push(n_name);
+                    var cnt = {
+                      id :"<%=c.id%>",
+                      contact_number : "<%=c.contact_number%>",
+                      balance : "<%= Utility.indian_number c.balance%>"
+                    }
+                    search_contacts[n_name] = cnt;
+   <%}%>
+
+  <% @sites.each{|c| %>
+                    site_names.push("<%=c.name%>");
+                    search_sites["<%=c.name%>"] = <%=c.id%>;
+   <%}%>
+
+  $('#txn_contact').autocomplete({
+    minLength: 1,
+    source: function (request,response){
+             a =  $("#txn_contact")[0].value;
+             c_names = []
+             $.each(contact_names, function( index, value ) {
+
+                 if(value.toLowerCase().startsWith(a.toLowerCase())){
+                  c_names.push(value)
+                 }
+              });
+              response(c_names);
+            },
+    select: function( event, ui ) { 
+                
+                $('#tranxn_contact_id').val(search_contacts[ui.item.value].id.toString());
+                 $('#contact_number').html("Ph: "+search_contacts[ui.item.value].contact_number+ " <br> Balance: "+search_contacts[ui.item.value].balance);
+              }       
+
+  });
+
+
+
+
+$('#txn_site').autocomplete({
+    minLength: 1,
+    source: function (request,response){
+              a =  $("#txn_site")[0].value;
+             s_names = []
+             $.each(site_names, function( index, value ) {
+            
+                 if(value.toLowerCase().startsWith(a.toLowerCase())){
+                  s_names.push(value)
+                 }
+              });
+              response(s_names);
+           },
+     select: function( event, ui ) { 
+      $('#tranxn_site_id').val(search_sites[ui.item.value].toString());}       
+
+  });
+
+  $('#txn-btn').click(function(){
+    $(this).attr('disabled', true);
+});
+ 
+</script>

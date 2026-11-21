@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Contacts-Cement</title>
+    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', defer: false, 'data-turbolinks-track': 'reload' %>
+    <%= csrf_meta_tag %>
+    <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/css/jqueryui-editable.css" rel="stylesheet"/>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jqueryui-editable/js/jqueryui-editable.min.js"/>
+
+  
+</head>
+<body>
+<%=render :template => "layouts/new_nav" %>
+
+<div class="container-fluid">
+ <div class="row" style="padding:5px">
+   <br/><br/>
+   <div class="col-12"style="text-align:left" id="linksto">
+   <br><%=space(2)%>
+   <%=link_to ('<i class="fa fa-home fa-lg"></i>').html_safe, tranxns_url, :style =>"font-size:18px;color:blue;padding-left:2px;" %>
+      | <%=space(3)%>
+      <%=link_to "Back to Contacts List", contacts_url %>
+   </div>
+  </div>
+
+  <div class="row" style="padding:1px">
+   <br><br>
+    <div class="col-12"style="text-align:left" id="contacts">
+      <%=yield%>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

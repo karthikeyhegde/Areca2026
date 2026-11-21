@@ -1,0 +1,137 @@
+<br><br>
+<div id='criteria' class="row" style="background-color:#F6D8D8;"> 
+  <div class='col-12'>  
+    <div class='row'>  
+        <div class='col-7'>
+            <div class="row" style="font-size:15px;padding-left:1em;">
+              <div class="col-12" >
+                <span  style="font-size:18px;color:#330099;"><%=@contact.name%></span>
+                 &nbsp;&nbsp; Ph: <%=@contact.contact_number%> 
+                  <%if !@contact.address.blank? %>
+                   &nbsp;&nbsp;
+                   Details: <%=@contact.address%>
+                  <%end%>
+              </div>
+            </div>   
+            <div class="row" style="font-size:15px;padding-left:1em;font-weight:500;">
+               <div class="col-12" >
+                 Balance: <span style="color:#700000;font-size:17px;">
+                            <%=Utility.indian_number @contact.balance%>
+                            </span>
+                </div>
+            </div>
+              
+            <div class="row"  style="font-size:15px;padding-left:1em;color:#909090 ;">
+               <div class="col-12" >     
+                   Total Amount :
+                  <%= Utility.indian_number @contact.total_purchase%>
+                  <%=space(3)%>
+                  Total Payment:
+                   <%= Utility.indian_number @contact.total_payment%>
+                  <%=space(3)%>
+                   Baaki/Starting Amount : <%= Utility.indian_number @contact.starting_balance%>
+                </div>
+            </div> 
+        </div>
+        <div class="col-5" style='text-align :right;padding-right:1em;' >
+           <div class="row pull-right"  >
+              <div class="col-11"> 
+                <%=form_tag reports_contact_path(:id=>@contact.id), :remote => true do%>
+
+                <%=text_field_tag :from_date, '', {class: 'report-date', style:'height:20px;width:120px;', :placeholder => "From Date"}%>
+                <span style="font-size:18px;"> - </span>
+                <%=text_field_tag :to_date, '', {class: 'report-date', style:'height:20px;width:120px;', :placeholder => "To Date"}%>
+                <%=submit_tag "Show" , {class:'btn btn-primary btn-xs', style:'vertical-align: top;'}%>
+                <%=submit_tag "Print View" , {class:'btn btn-warning btn-xs', style:'vertical-align: top;'} %>    
+              <%end%>
+              </div>
+             <div class="col-1">&nbsp;</div>
+           </div>           
+           <div class="row pull-right"  style='text-align :right;padding-right:1em;' >
+             <div class='col-12'>&nbsp;</div>
+           </div>
+    
+          <div class="row pull-right"  style='text-align :right;padding-right:0.5em;' >
+              <div id='trs_link' class="col-3 bst-link bst-link-selected" style='margin-left: 1px;'>
+
+                  <%=link_to 'Transactions', report_page_contact_path(:id => @contact.id, :show_val => 'trs')%>
+             </div>
+              <div  id = 'itms_link' class="col-3 bst-link " style='margin-left: 1px;'>
+
+                   <%=link_to 'Items' ,report_page_contact_path(:id => @contact.id, :show_val => 'itms')%>
+            </div> 
+            <div id= 'pays_link' class="col-3 bst-link " style='margin-left: 1px;'>
+
+                  <%=link_to 'Payments', report_page_contact_path(:id => @contact.id, :show_val => 'pays')%>
+            </div> 
+            <%if @contact.supplier == 1 %>
+              <div id='stks_link' class="col-3 bst-link " style='margin-left: 1px;'>
+
+                  <%=link_to 'Stock Entries', contact_stock_stock_entry_path(:id => @contact.id, :show_val => 'stks')%>
+            </div>  
+            <%end%>      
+          </div>  
+
+        </div> 
+     </div>
+   </div>
+</div>
+
+<% if !flash[:notice].blank?%>
+  <div id='success_' class="alert alert-success">
+       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+       </button>
+       <%=flash[:notice]%>
+  </div>
+  <%end%>
+<div id="trs" class="row">
+    <div class="col-12" >
+      <div class="h4-class" style="padding-left:8em;">
+        <% if @show_val == 'trs'%><br>Transactions List<%end%>
+        <% if @show_val == 'itms'%>Items List<%end%>
+        <% if @show_val == 'pays'%>Payments List<%end%>
+        <% if @show_val != 'stks'%> 
+          <button id='filter_button' type="button" class="btn " style="vertical-align:top;" onclick='$("#mn_filter_cnt").toggle();$("#filter_button").toggleClass("btn-info");'>
+           <i id='flt_icon' class="fa fa-cogs " > </i></button> 
+         <div  id='mn_filter_cnt' style="<%if @report.id.blank? %>display:none;<%end%>">
+           <%=render :partial => 'contacts_filter'%>
+           
+         </div>
+        <%end%> 
+        <br>
+      </div>
+    </div>
+</div> 
+   
+<div id="trs" class="row">
+   <div class="col-12" id='contact_report'>
+     <% @contact_id = @contact.id %>
+      <% if @show_val == 'trs'%><%=render :template => 'contacts/_reports'%><%end%>
+      <% if @show_val == 'itms'%><%=render :template => 'contacts/_items_page'%><%end%>
+      <% if @show_val == 'pays'%><%=render :template => 'payments/_list'%><%end%>
+      <% if @show_val == 'stks'%><%=render :template => 'stock_entries/_list'%><%end%>
+        
+   </div>
+   <br/>
+</div>
+
+
+
+<script type="text/javascript">
+
+$('.report-date').datepicker({ dateFormat: 'dd-mm-yy' });
+
+$('.bst-link').each(function() {
+    var elem = $(this);
+    try{
+    if (elem.attr('id').search('<%=@show_val%>') >= 0)
+       {
+        elem.addClass('bst-link-selected');
+       }else{
+        elem.removeClass('bst-link-selected');
+       }
+     }catch (err){
+      alert(err);
+     }
+  });
+</script>

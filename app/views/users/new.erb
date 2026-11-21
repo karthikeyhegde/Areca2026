@@ -1,0 +1,17 @@
+<%=render :template => "users/_header" %>
+<h5> Add New User </h5>
+<%if !@user.errors.blank? %>
+<%@user.errors.each{|e| %>
+  <div class="alert alert-warning"><%=e.to_s%></div>
+  <%}%>
+<%end%>
+  <% if !flash[:error].blank? %>
+
+<div class="alert alert-warning">
+       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+       </button>
+        <%=flash[:error]%>
+     </div>
+<%end%>
+
+<%= render :partial => 'form'%>

@@ -1,0 +1,90 @@
+
+<div class="row">
+  
+  <div class="col-3 offset-1"><h5><%=@item.name%> <span class="greytext">- Stock Entries</span></h5></div>
+  <div class="col-4">
+    <%=form_tag filter_stkentries_items_path do%>
+        <%=text_field_tag :from_date, params[:from_date], {class: 'report-date', style:'height:25px;width:120px;', :placeholder => "From Date"}%>
+       <input type="hidden" name="item_id" value="<%=@item.id%>"/>
+       <span style="font-size:18px;"> - </span>
+      
+        <%=text_field_tag :to_date, params[:to_date], {class: 'report-date', style:'height:25px;width:120px;', :placeholder => "To Date"}%>
+          <%=submit_tag "Show" , {class:'btn btn-primary btn-xs', style:'vertical-align: top;', :onclick => "$('#myspinner').show()"}%>
+          <span id='myspinner' style="display:none;"><%=image_tag "ajax-loader.gif"%></span>
+    <%end%>
+  </div>
+  <div class="col-4 float-right greytext" style="font-weight: 350;">
+       &nbsp;&nbsp;Starting Stock: <%=@item.starting_stock%>
+        &nbsp;&nbsp;
+       Current Stock: <%=@item.current_stock%>
+     </div>
+ </div>
+
+<div id="trs" class="row">
+   <div class="col-12">
+      <table class="table table-condensed stockentrytable" style='font-size:12px;width:80%' align="center">
+  <thead style="background-color:#003366;color:#fff">
+    <th>StockEntry#</th>
+    <th>Date</th>
+    <th>Item</th>    
+    <th>Contact</th>
+    <th>Numbers & Price</th>
+    <th>Stock Balance</th>
+    <th>Action</th>
+  </thead>
+  <tbody>
+   <% i = 0
+    @stock_entries.each{|c|
+     i+= 1 
+  %>
+       <tr>
+      <td> <span id ='t1'>
+          <%=link_to "#{c.id}", edit_stock_entry_url(c.id), :class=>"btn btn-xs btn-link "%>
+         </span></td>
+      <td><%=c.on_date%></td>
+      <td><%=link_to c.item.name, rep_txnitems_item_url(c.item.id)%>
+     
+      <%if !c.note.nil?%> <br><%=c.note%><%end%>
+      <%if !c.vehicle_number.nil?%> <br><%=c.vehicle_number%><%end%>
+      <%if c.is_return == 1%><br/><b>Return</b><%end%>
+      </td>
+      <td><%if !c.blank? and !c.contact_id.blank?%><%=link_to c.name_subname, report_page_contact_path(:id => c.contact_id)%><%end%></td>
+      <td><%if c.is_return == 1%>-<%end%><%=c.numbers%>  <%if !c.price.nil?  and c.price > 0 %> ( <%=c.price%> )<%end%> </td>
+      <td><%=c.item_stock%></td>
+    <td>
+         
+         <span id='t2' title="Remove Entry <%=c.id%>">
+          <%=link_to "x", remove_stock_entry_url(c.id), method: :post, class: "btn btn-xs btn-danger", data:{confirm: "Stock Entry #{c.id} will be deleted permanently !!  Are you Sure ?", disable_with: "Processing..."}%>
+         </span>
+      </td>
+   </tr>
+   <%}%>
+   <tr class="table-warning"><td></td>
+    <td></td>
+    <td>Total</td>
+    <td></td>
+    <td><%=@total%></td>
+    <td></td>
+    <td></td>
+   </tr>  
+  </tbody>
+
+</table>
+
+   </div>
+</div>
+
+<script type="text/javascript">
+
+$('.report-date').datepicker({ dateFormat: 'dd-mm-yy',
+    beforeShow: function (textbox, instance) {   
+                instance.dpDiv.css({
+                    marginTop: (-textbox.offsetHeight+30) + 'px'
+                    
+                });
+            }
+
+ });
+
+
+</script>

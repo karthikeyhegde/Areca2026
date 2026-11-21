@@ -1,0 +1,86 @@
+
+<br/>
+<div class="row">
+  
+  <div class="col-2 offset-1"><h5><%=@item.name%> <br> <i class="fa fa-scroll"></i><span class="greytext">Daily In-Out</span></h5></div>
+  <div class="col-6">
+    <%=form_tag daily_trans_items_path do%>
+        <%=text_field_tag :sdate, params[:sdate], {class: 'report-date', style:'height:25px;width:120px;', :placeholder => "From Date"}%>
+       <input type="hidden" name="id" value="<%=@item.id%>"/>
+       <span style="font-size:18px;"> - </span>
+      
+        <%=text_field_tag :edate, params[:edate], {class: 'report-date', style:'height:25px;width:120px;', :placeholder => "To Date"}%>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<%=select_tag  'item_id', options_for_select(["Select Item"]+Item.picklist, params[:item_id])%>
+           &nbsp;&nbsp;&nbsp;&nbsp;
+          <%=submit_tag "Show" , {class:'btn btn-primary btn-xs', style:'vertical-align: top;', :onclick => "$('#myspinner').show()"}%>
+          <span id='myspinner' style="display:none;"><%=image_tag "ajax-loader.gif"%></span>
+          <br><span class="subinfo"><%=@message%></span>
+  <%end%>
+  </div>
+  <div class="col-3 float-right" style="font-weight: 350;">
+       &nbsp;&nbsp;<b>Total</b> In: <%=@total_in%>
+        &nbsp;&nbsp;Out: <%=@total_out%>
+     </div>
+ </div>
+
+<div id="trs" class="row">
+   <div class="col-12">
+<table class="table zebra-striped " style='font-size:13px;width:90%;font-weight: 400' align="center">
+  <thead style="background-color:#2874A6;color:#FFFFFF">
+    <th>Date</th>
+    <th><i class="fa fa-bus"></i>&nbsp;Stock In</th>
+    <th>Txn Out &nbsp;..<i class="fa fa-truck"></i> </th>
+    <th><i class="fa fa-calculator"></i>Day Numbers</th>
+    <th> <i class="fa fa-layer-group "></i>&nbsp;EOD Stock</th>
+  </thead>
+  <tbody>
+   <% i = 0
+    @data_arr.each{|c|
+
+     i+= 1 %>
+    <%if i%2 == 0%>
+       <tr>
+    <%else%>
+       <tr class="table-info">
+    <%end%>
+    <td><%=c.on_date%></td>
+    <td><%=c.stock_sum%></td>
+    <td><%=c.txn_sum%></td>
+
+    <td><%=c.day_number%></td>
+    <td><%=c.eod_stock%></td>        
+   </tr>
+   <%}%>
+   <tr class="table-secondary">
+    <td><b>Total</b></td>
+  
+    <td><%=@total_in%></td>
+    
+    <td> <%=@total_out%></td>
+    <td><%=(@total_in - @total_out)%></td>
+    <td></td>  
+   </tr>
+  </tbody>
+
+</table>
+   </div>
+</div>
+
+<script type="text/javascript">
+
+$('.report-date').datepicker({ dateFormat: 'dd-mm-yy',
+    beforeShow: function (textbox, instance) {   
+                instance.dpDiv.css({
+                    marginTop: (-textbox.offsetHeight+30) + 'px'
+                    
+                });
+            }
+
+ });
+$('#item_id').select2({
+    width:'210px',
+
+ });
+
+</script>

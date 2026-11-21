@@ -1,0 +1,3 @@
+
+<% @trans = @p %>
+$('#new_payment').before("<%= j(render  :template => 'tranxns/_trans_error', :locals => {:trans => @trans} ) %>");

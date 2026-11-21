@@ -1,0 +1,21 @@
+<% if ( !@trans.nil?  and !@trans.errors.empty?) or !@serr.nil? %>
+ <tr>
+ <td colspan=3>
+   <div class="alert alert-warning">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+    </button>
+    <b> Transaction Not Saved !! </b><br>
+       Below error occored <br>
+      <%if !@trans.nil?  and !@trans.errors.empty? %>
+            <% @trans.errors.messages.each{|e| %>
+               . <%=e[1][0]%>
+               <br>
+            <%}%>
+      <%end%>     
+      <%if  !@serr.nil?%>
+         . <%=@serr%>
+
+      <%end%>	
+   </div>
+ </td></tr>
+<%end%>

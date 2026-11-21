@@ -1,0 +1,49 @@
+    <div id="block1_filters" class=" block_filters filter-left-pos" style="z-index: 1000;width:100%">
+
+        <div class="row"  id='sales_filter_header_row'  style="font-size:11px;margin:0px;padding:0px;">
+          <div id='filter_header' class="col-12" style="margin:3px;">
+               <i class="fa fa-filter fa-lg" style="color:#806517"></i> <b>Item Sales Filter</b> 
+          </div> 
+         </div> 
+         <% @urlval = filter_block1_analytics_url 
+            @date_class = "report_date_1"
+            @blockstr = 'report_form1'%>
+         <%=render partial: 'filter_form_fields'%>
+      <hr style="margin:5px;">
+
+      <div class="row"  id='show_savedfilter'  style="font-size:11px;margin:0px;padding:0px;">
+         <div id='saved_reports_block1' class="col-12" style="margin:3px;">
+             <b>Saved Filters</b>
+             <br>
+             <%count =0 %>
+              <%Report.where(:tag => "analytics_block1").each{|a| %>
+              <%count += 1%>
+                <%=link_to a.name,  filter_block1_analytics_url(:id => a.id), :remote => true, :method => "post" %>
+                <br>
+              <%}%>  
+              <% if count == 0%>
+                No Saved filters.
+              <%end%>
+          </div>  
+      </div>    
+
+   </div>   
+            
+<script>
+
+  $('#report_contact_ids').select2({
+    width:'60%',
+
+ });
+   $('#report_site_ids').select2({
+    width:'60%',
+
+ });
+
+$('#report_item_ids_abc').select2({
+    width:'210px',
+
+ });
+</script>
+
+    

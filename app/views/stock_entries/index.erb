@@ -1,0 +1,77 @@
+<br><br>
+<div id="index_head" class="row" style="padding:0px;margin:0px">
+ <div class="col-4 ">
+   <h5>Stock Entries</h5>
+ </div>
+</div>
+ <%=render :template => 'helpers/flash'%>
+<div id='filter_headers' class="row">
+	
+<div class="col-3 offset-1" >
+	      <span>
+	      	<%=form_tag pagination_stock_entries_path, :remote => true do%>
+	      	<%=select_tag  'item_id', options_for_select(["Select Item"]+Item.picklist)%>
+	      </span>
+           
+   </div>
+   <div class="col-2">
+     
+   </div>
+<div class="col-6">
+
+    <span>
+       <span id="page_number"> 
+            <%=link_to  "2 Week",  pagination_stock_entries_path(:sorted_column => @sort_column,:sort_order => @sort_order, :no_of_weeks => 2), :remote => true, :method => :post, :id => '2_weeks', :onclick => "$('#myspinner').show()" %>
+
+          </span> |
+
+          <span id="page_number"> 
+            <%=link_to  "3 Week",  pagination_stock_entries_path(:sorted_column => @sort_column,:sort_order => @sort_order, :no_of_weeks => 3), :remote => true, :method => :post , :id=>'3_weeks', :onclick => "$('#myspinner').show()" %>
+            
+          </span> |
+
+          <span id="page_number"> 
+            <%=link_to  "1 Month",  pagination_stock_entries_path(:sorted_column => @sort_column,:sort_order => @sort_order, :month_ago => true), :remote => true, :method => :post, :id => '1_month', :onclick => "$('#myspinner').show()" %>
+          </span> 
+          
+        <%=text_field_tag :from_date, '', {class: 'report-date', style:'height:25px;width:120px;', :placeholder => "From Date"}%>
+
+       <span style="font-size:18px;"> - </span>
+      
+        <%=text_field_tag :to_date, '', {class: 'report-date', style:'height:25px;width:120px;', :placeholder => "To Date"}%>
+          <%=submit_tag "Show" , {class:'btn btn-primary btn-xs', style:'vertical-align: top;', onclick: "$('#myspinner').show()"}%>
+          <span id='myspinner' style="display:none;"><%=image_tag "ajax-loader.gif"%></span>
+      
+          </span>
+<%end%>
+     </div>
+
+
+
+
+</div>
+
+<div id="index_list" class="row-fluid">
+   <div id='filter_list' class="col-12">
+    <%=render :partial => 'list'%>
+   </div>
+  </div>
+
+  <script type="text/javascript">
+
+$('.report-date').datepicker({ dateFormat: 'dd-mm-yy',
+    beforeShow: function (textbox, instance) {   
+                instance.dpDiv.css({
+                    marginTop: (-textbox.offsetHeight+30) + 'px'
+                    
+                });
+            }
+
+ });
+$('#item_id').select2({
+    width:'210px',
+
+ });
+
+
+</script>

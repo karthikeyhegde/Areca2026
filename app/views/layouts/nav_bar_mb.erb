@@ -1,0 +1,33 @@
+<span class="navbar-collapse d-inline d-lg-none" id="abcd">
+
+
+  <span class="row-fluid" >
+   <span class="col-1"><%=link_to "Contacts", contacts_url %></span>
+   <span class="col-2"><a class="dropdown" id="menu_click_mb" ><span style="color:#FDEEF4;font-size:22px;cursor:pointer;" >&#9776;</span> </a></span>
+   <span class="col-4">  <a class="btn btn-sm btn-secondary" style="color:#FFF" href="<%=new_stock_entry_url%>"> 
+                    <span style='font-weight :bold;font-size:12px;'>+</span><span>S <i class="fa  fa-cubes"></i></span>
+         </a>
+         <a class="btn btn-sm btn-success" style="color:#FFF" href="<%=new_payment_url%>">
+               <span style='font-weight :bold;font-size:12px;'>+</span><span> P  <i class="fa fa-briefcase"></i></span>
+         </a>
+
+         <a class="btn btn-sm btn-primary " style="color:#FFF" href="<%=quick_add_form_tranxns_url%>">
+               <span style='font-weight :bold;font-size:12px;'> + </span><span> T  <i class="fa fa-truck"></i></span>
+         </a>
+   </span>
+     <span class="col-2 d-inline">
+          <form class="form-inline my-2 my-lg-0 d-inline" action="<%=all_search_items_url%>">
+                <input name='search' type="text" class="form-control mr-sm-2" style="background-color:#FAFAFA;color:#585858;height:25px;" placeholder="Search"/>    
+            </form>
+     </span>  
+     <span class="col-2">
+        <a href="#" data-toggle="dropdown" class="dropdown-toggle" style="color:#FFF;padding-right: 15px;"> <%=@auser.full_name%>  <b class="caret"></b></a>
+          <ul class="dropdown-menu" style="width:30px;">
+             <li class="nav-item active"><%=link_to "Details", self_details_user_url(:id => @auser.id) %></li>
+             <li class="nav-item active"><%=link_to "Log Out", logout_user_url(:id => @auser.id) %> </li> 
+          </ul>
+     </span>         
+  </span>
+
+  </span>
+        

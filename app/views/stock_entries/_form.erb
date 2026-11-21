@@ -1,0 +1,176 @@
+<br><br>
+<%= render  :template => 'tranxns/_generic_modal' %>
+<%= form_for @stock_entry, remote: true, method: @form_method  do |f| %>
+ 
+     <div id='Header' class="row txn-form">
+     <div class="col-8 offset-2" >
+     <h4>Stock Entry <%=@stock_entry.id%></h4>
+       <% if !flash[:notice].blank? %>
+
+<div class="alert alert-warning">
+       <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;
+       </button>
+        <%=flash[:notice]%>
+     </div>
+<%end%>
+     </div>
+   </div>
+
+<div id='div_item_table' class="row txn-form" style="border:0;">
+   <div class="col-2" >
+   </div>
+ <div class="col-8">
+    <table id='item_tb' class=' nb-table' style="border:1px solid #e6e6e6; background-color: #f1f1f1;">
+      <thead style="font-size:12px;">
+      </thead> 
+      <tbody style='font-size:13px;'>
+
+          <tr id='first_row_fields'>
+           <td style="padding:20px;padding-bottom:10px;">
+            Date : <br>
+            <%if @stock_entry.id.blank? %>
+             <%= f.text_field :on_date, class:'input', style:'height:30px'%>
+           <%else%>
+             <%= f.text_field :on_date, class:'input', style:'height:30px', disabled:true%>
+           <%end%>
+           </td>
+           <td  style="width:20%;">
+            <%if @stock_entry.id.blank? %>
+              Contact: <%= link_to ((image_tag "add.png", :size=>"10x10")+' New'), add_txn_contacts_path,  {:remote => true, 'data-toggle' =>  "modal", 'data-target' => '#contact-modal-window', style: 'font-size:12px;'}  %> &nbsp;|
+         <span class="txt-lnk" onclick="show_contact_modal()" data-toggle ="modal", data-target='#contact-modal-window'> <%=image_tag("find.png", :size=>"12x12")%> List</span>
+              <br>
+              <%vl = ( @stock_entry.contact_id.blank? ? '': @stock_entry.contact.name_subname) %>
+             <%=text_field :stk, :contact, class:'autocomplete', style:"height:30px;", :value =>vl%>
+             <br>
+             <span id='contact_number' style='color:grey;font-size:11px;font-weight:bold;'></span>
+            <%else%>
+            Contact:<br>
+             <%= @stock_entry.contact.name_subname%>
+           <%end%>
+             <%=f.hidden_field :contact_id %>
+             <%=f.hidden_field :updated_at%>
+           </td>
+    
+         </tr>
+     
+
+          <tr id='gap_row_1' class='borderless'>
+            <td style="padding:5px;"></td>
+           </tr> 
+         <tr class='item_area'>
+           <td style="padding:1px;padding-top:8px;border:0;padding-left:20px;" class='item_arr_no' colspan=''> 
+            <%if @form_method != 'patch' %>
+              <%=f.select  :item_id, options_for_select(["Select Item"]+Item.picklist), :style=>"width:100px;"%>
+              <%end%>
+             <%if @form_method == 'patch' %>
+              <%=f.select  :item_id,  options_for_select(["Select ..",'']+Item.picklist,["#{@stock_entry.item.name} ", @stock_entry.item_id ]), {}, {id:"item_select_#{@stock_entry.item_id}",class:'item-select', disabled:true} %>
+              <%end%>
+          </td>
+        <td style="padding:1px;padding-top:8px;border:0;" class='item_arr_no' colspan=''> 
+             <%=f.text_field :numbers,  :id => "item_number", :class =>"item_numbers", :style=>"height:30px;width:150px;" , :placeholder =>"Numbers" %>
+
+    </td><td style="padding:1px;padding-top:8px;border:0;padding-left:5px;" >
+             <%=f.text_field :price, class:"item_numbers", :style=>"height:30px;width:150px;", :placeholder => "Price" %>
+      </td>
+      </tr>
+      <tr id='gap_row_2' class='borderless'>
+            <td >&nbsp;</td>
+           </tr>
+
+      <tr>
+          <td id='a_note' style="padding-left:20px;">
+           <span id='s_note'>Note:<br><%=f.text_area   :note , cols:25, rows: 4 %></span>
+          </td>
+          <td style="vertical-align: top">Vehicle Number:<br>
+             <%=f.text_field :vehicle_number, class:"item_numbers", :style=>"height:30px;width:150px;" %>
+      </td>
+          <td style="padding-left:20px;vertical-align: top;"><span class="label">Return: <%=f.check_box  :is_return %></td>
+
+        </tr>
+        <tr id='gap_row_3' >
+            <td style="padding:10px;border-bottom: 1px solid #E6E6E6;" colspan="3"></td>
+           </tr> 
+        <tr>
+          <td style="padding:20px;" colspan="3"><%=submit_tag 'Save Stock Entry',  class:'btn btn-warning', :data => {disable_with: "Saving ..."}, id:'tx-btn'%><%=space(5).html_safe%>
+     <%=submit_tag 'Save and +New',  class:'btn btn-success', :data => {disable_with: "Saving ..."}, id:'tx-btn'%><%=space(5).html_safe%>
+      <%=link_to "Cancel", stock_entries_url, :style=>"font-weight:bold"%>
+</td>
+       
+
+        </tr>
+        </tbody>
+        </table>
+
+ <%end%>
+ 
+
+ <script type="text/javascript">
+$('#stock_entry_on_date').datepicker({ dateFormat: 'dd-mm-yy' });
+  <% if @form_method != "patch" %>
+$("#stock_entry_on_date").datepicker('setDate', new Date());
+<%end%>
+
+
+  var contact_names = [];
+  var search_contacts = {};
+
+   
+   <% @contacts.each{|c| %>
+
+                    n_name = " <%=(c.subname == nil ? c.name : c.name+' '+c.subname)%> "
+                    contact_names.push(n_name);
+                    var cnt = {
+                      id :"<%=c.id%>",
+                      contact_number : "<%=c.contact_number%>",
+                    }
+                    search_contacts[n_name] = cnt;
+   <%}%>
+
+
+  $('#stk_contact').autocomplete({
+    minLength: 1 ,
+    source: contact_names,
+    select: function( event, ui ) { 
+                $('#stock_entry_contact_id').val(search_contacts[ui.item.value].id.toString());
+                 $('#contact_number').html("Ph: "+search_contacts[ui.item.value].contact_number)
+
+              }       
+
+  });
+<% if @form_method != "patch" %>
+  $('#stock_entry_item_id').select2({
+    width:'210px',
+
+ });
+  <%end%>
+
+  <% if @form_method == "patch" %>
+  $('.item-select').select2({
+    width:'210px',
+
+ });
+  <%end%>
+
+  function show_contact_modal(){
+   <% @type = 'stk' %>
+    console.log('test');
+    $("#contact-modal-window").addClass('list-modal');
+    console.log('test');
+    $("#myModaTitle").html("Contacts")
+    $("#model_contact").html("<%= escape_javascript(render 'contacts/quick_select_list', local: {contacts: @contacts, type: @type} ) %>");
+
+  }
+
+
+        function show_contact_modal11(){
+    $("#contact-modal-window").addClass('list-modal');
+    $("#myModaTitle").html("Contacts")
+    $("#model_contact").html("<%= escape_javascript(render 'contacts/quick_select_list', local: {contacts: @cont} ) %>");
+
+  }
+
+
+ 
+
+
+ </script>

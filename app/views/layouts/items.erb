@@ -1,0 +1,29 @@
+<html>
+<head>
+     <title>Cement</title>
+   <%= csp_meta_tag %>
+    <%= stylesheet_pack_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+    <%= javascript_pack_tag 'application', defer: false, 'data-turbolinks-track': 'reload' %>
+  <%= csrf_meta_tag %>
+</head>
+<body>
+<%=render :template => "layouts/new_nav" %>
+
+<div class="container-fluid">
+
+  <div class="row" style="padding:5px">
+
+    <div class="col-12"style="text-align:left" id="items">
+      <br><br>
+         <% if params[:action] != "all_search"%>
+          <%=render :template => "items/_items_header" %>
+         <%end%> 
+          <%=yield%>
+    </div>
+
+
+  </div>
+
+</div>
+</body>
+</html>
